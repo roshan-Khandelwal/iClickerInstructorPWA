@@ -1,0 +1,12 @@
+<div class="noSessions" *ngIf="activeClassSessions == 0 && !isLoading">
+    <h4>No active Sessions</h4>
+    <p>To use this app, start a polling session on the Desktop app</p>
+    <button mat-raised-button color="primary" (click)="getActiveSessions()">Refresh</button>
+</div>
+<div class="hasSessions" *ngIf="activeClassSessions > 0 && !isLoading">
+  <div class="activeSession">
+    <h4>{{activeClassSession.sessionName}}</h4>
+    <p>Start Time : {{activeClassSession.dateAdded | date:'medium'}}</p>
+  </div>
+</div>
+

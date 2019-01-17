@@ -1,0 +1,21 @@
+.noSessions {
+    position: relative;
+    top: 200px;
+    margin: 20px;
+    text-align: center;
+}
+
+.activeSession {
+    padding: 10px;
+    background-color: #efefef;
+    margin-top: 5px;
+    border: .05rem solid #cdcdcd;
+
+    h4 {
+        margin-bottom: 0px;
+    }
+
+    p {
+        margin-top: .5rem;
+    }
+}

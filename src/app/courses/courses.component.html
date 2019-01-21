@@ -4,7 +4,7 @@
     <button mat-raised-button color="primary" (click)="getActiveSessions()">Refresh</button>
 </div>
 <div class="hasSessions" *ngIf="activeClassSessions > 0 && !isLoading">
-  <div class="activeSession">
+  <div class="activeSession" (click)="joinSession()">
     <h4>{{activeClassSession.sessionName}}</h4>
     <p>Start Time : {{activeClassSession.dateAdded | date:'medium'}}</p>
   </div>

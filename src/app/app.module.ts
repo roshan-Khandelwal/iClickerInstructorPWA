@@ -12,6 +12,7 @@ import { ApiService } from 'src/app/services/api.service';
 
 import { HttpClientModule} from '@angular/common/http';
 import { CoursesComponent } from './courses/courses.component';
+import { WebsocketService } from 'src/app/services/websocket.service';
 
 
 @NgModule({
@@ -28,7 +29,7 @@ import { CoursesComponent } from './courses/courses.component';
     HttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
-  providers: [ApiService],
+  providers: [ApiService, WebsocketService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

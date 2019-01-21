@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { buildAuthHeaders, buildRequestHeaders } from 'src/app/utils/utils';
+import { WebsocketService } from 'src/app/services/websocket.service';
 
-let apiUrl = "https://api.reef-education.com/trogon";
+let apiUrl = "https://api-dev.reef-education.com/trogon";
 
 let urls = {
   /* Login */
@@ -47,33 +48,49 @@ export class ApiService {
     return this.loginData;
   }
 
-  constructor(private _http: HttpClient) { }
+  constructor(private _http: HttpClient, private wsService : WebsocketService) { }
 
   login(username, password) : Observable<any>{
-    let loginUrl : string = "https://api-gateway-dev.reef-education.com/authproxy/login" // apiUrl + urls.LOGIN;
-    return this._http.post(loginUrl, {"email" : username, "password" : password}, {
+    let loginUrl : string = apiUrl + urls.LOGIN; // "https://api-gateway-dev.reef-education.com/authproxy/login"
+    return this._http.put(loginUrl, {"email" : username, "password" : password}, {
       headers : {
-        "Content-Type": "application/vnd.reef.login-proxy-request-v1+json",
-        Accept: "application/json",
-        "Reef-Auth-Type": "oauth"
+        "Content-Type": "application/json",
+        Accept: "application/json"
       }
     });
   }  
 
+  // "Content-Type": "application/vnd.reef.login-proxy-request-v1+json",
+  // "Reef-Auth-Type": "oauth"
+
   getCourses(body?) : Observable<any> {
     let courseUrl : string = "https://api-dev.reef-education.com/trogon" + urls.GET_COURSES;
 
-    // let headers = buildRequestHeaders(this.getLoginData(), "GET", body);
-    const headers = {
-      'Content-Type': 'application/json',
-      Accept: "application/json",
-      "Reef-Auth-Type": "oauth",
-      'Authorization': `Bearer ${this.loginData.access_token}`
+    let headers = buildRequestHeaders(this.getLoginData(), "GET", body);
+    // const headers = {
+    //   'Content-Type': 'application/json',
+    //   Accept: "application/json",
+    //   "Reef-Auth-Type": "oauth",
+    //   'Authorization': `Bearer ${this.loginData.access_token}`
+    // }
+
+    let method = "GET";
+    const request = {method, headers};
+
+    if (body) {
+      request['body'] = JSON.stringify(body);
     }
 
-    return this._http.get(courseUrl, {
-      headers : headers
+    return Observable.create(observer => {
+      console.log(request);
+      fetch(courseUrl, request).then(data => {
+        observer.next(data);
+        observer.complete();
+      });
     });
+    // return this._http.get(courseUrl, {
+    //   headers : headers
+    // });
   }
 
   getCourseSessionHistory(courseId) : Observable<any> {
@@ -92,6 +109,30 @@ export class ApiService {
       headers : headers,
       params : params
     });
+  }
+
+
+  joinSession(courseId) {
+
+    let joinCourseSessionUrl : string = "wss://api-dev.reef-education.com/trogon" + "/v1/session/course/join/" + courseId;
+
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json; charset=utf-8',
+      "Reef-Auth-Type": "oauth",
+      'Authorization': `Bearer ${this.loginData.access_token}`,
+      'REEF-WS-ACK': true,
+      'REEF-WS-COMPRESS': true,
+      'REEF-WS-VER': true,
+      'Connection' : "Upgrade",
+      'Upgrade' : "websocket"
+    };
+
+    <Subject<MessageEvent>>this.wsService.connect(joinCourseSessionUrl, headers)
+      .pipe(map((response : MessageEvent) : any => {
+        let data = JSON.parse(response.data);
+        console.log(data);
+      }));
   }
 
 }

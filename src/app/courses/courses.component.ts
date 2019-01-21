@@ -38,4 +38,8 @@ export class CoursesComponent implements OnInit {
     });
   }
 
+  joinSession() {
+    this.apiService.joinSession(this.activeClassSession.courseId);
+  }
+
 }

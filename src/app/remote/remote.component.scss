@@ -1,0 +1,33 @@
+.start_session {
+    font-size: 12rem;
+    display: inline-block;
+    position: relative;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50% , 50%);
+    color: #673ab7;
+    cursor: pointer;
+}
+
+h3 {
+    text-align: center;
+}
+
+
+.buttonRow {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+
+    .questonTypeButton {
+        width: 46%;
+        padding: .5rem;
+        margin: 2% 1% 0% 1%;
+
+        &.isSelected {
+            background-color: #673ab7;
+            color: #FFF;
+        }
+    }
+}

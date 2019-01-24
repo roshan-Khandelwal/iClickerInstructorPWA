@@ -13,13 +13,25 @@ import { ApiService } from 'src/app/services/api.service';
 import { HttpClientModule} from '@angular/common/http';
 import { CoursesComponent } from './courses/courses.component';
 import { WebsocketService } from 'src/app/services/websocket.service';
+import { SessionComponent } from './session/session.component';
+import { RemoteComponent } from './remote/remote.component';
+import { ResultsComponent } from './results/results.component';
+import { AttendeesComponent } from './attendees/attendees.component';
+import { QuestionsComponent } from './questions/questions.component';
+import { MoreComponent } from './more/more.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    CoursesComponent
+    CoursesComponent,
+    SessionComponent,
+    RemoteComponent,
+    ResultsComponent,
+    AttendeesComponent,
+    QuestionsComponent,
+    MoreComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,19 @@
+.footer {
+    position: absolute;
+    bottom: 50px;
+    width: 100%;
+    border-top: .1rem solid #673ab7;
+
+    .userAction{
+        width: 20%;
+        padding: 1rem .5rem;
+        min-height: 100px;
+        float: left;
+        border-right: 0rem;
+        border-radius: 0px;
+    }
+
+    .material-icons {
+        display: block;
+    }
+}

@@ -51,48 +51,33 @@ export class ApiService {
   constructor(private _http: HttpClient, private wsService : WebsocketService) { }
 
   login(username, password) : Observable<any>{
-    let loginUrl : string = apiUrl + urls.LOGIN; // "https://api-gateway-dev.reef-education.com/authproxy/login"
-    return this._http.put(loginUrl, {"email" : username, "password" : password}, {
+    let loginUrl : string = "https://api-gateway-dev.reef-education.com/authproxy/login"
+    return this._http.post(loginUrl, {"email" : username, "password" : password}, {
       headers : {
-        "Content-Type": "application/json",
-        Accept: "application/json"
+        Accept: "application/json",
+        "Content-Type": "application/vnd.reef.login-proxy-request-v1+json",
+        "Reef-Auth-Type": "oauth"
       }
     });
   }  
 
-  // "Content-Type": "application/vnd.reef.login-proxy-request-v1+json",
-  // "Reef-Auth-Type": "oauth"
-
+  
   getCourses(body?) : Observable<any> {
     let courseUrl : string = "https://api-dev.reef-education.com/trogon" + urls.GET_COURSES;
 
-    let headers = buildRequestHeaders(this.getLoginData(), "GET", body);
-    // const headers = {
-    //   'Content-Type': 'application/json',
-    //   Accept: "application/json",
-    //   "Reef-Auth-Type": "oauth",
-    //   'Authorization': `Bearer ${this.loginData.access_token}`
-    // }
-
-    let method = "GET";
-    const request = {method, headers};
-
-    if (body) {
-      request['body'] = JSON.stringify(body);
+    const headers = {
+      'Content-Type': 'application/json',
+      Accept: "application/json",
+      "Reef-Auth-Type": "oauth",
+      'Authorization': `Bearer ${this.loginData.access_token}`
     }
 
-    return Observable.create(observer => {
-      console.log(request);
-      fetch(courseUrl, request).then(data => {
-        observer.next(data);
-        observer.complete();
-      });
+    return this._http.get(courseUrl, {
+      headers : headers
     });
-    // return this._http.get(courseUrl, {
-    //   headers : headers
-    // });
   }
 
+  
   getCourseSessionHistory(courseId) : Observable<any> {
 
     let sessionHistoryUrl : string = "https://api-dev.reef-education.com/trogon" + urls.GET_COURSE_SESSION;
@@ -112,27 +97,54 @@ export class ApiService {
   }
 
 
-  joinSession(courseId) {
+  joinSession(courseId)  : Observable<any> {
 
-    let joinCourseSessionUrl : string = "wss://api-dev.reef-education.com/trogon" + "/v1/session/course/join/" + courseId;
+    let joinCourseSessionUrl : string = "https://api-dev.reef-education.com/trogon" + "/v1/instructor/session/join/" + courseId;
 
     const headers = {
-      Accept: 'application/json',
-      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Type': 'application/json',
+      Accept: "application/json",
       "Reef-Auth-Type": "oauth",
-      'Authorization': `Bearer ${this.loginData.access_token}`,
-      'REEF-WS-ACK': true,
-      'REEF-WS-COMPRESS': true,
-      'REEF-WS-VER': true,
-      'Connection' : "Upgrade",
-      'Upgrade' : "websocket"
-    };
+      'Authorization': `Bearer ${this.loginData.access_token}`
+    }
 
-    <Subject<MessageEvent>>this.wsService.connect(joinCourseSessionUrl, headers)
-      .pipe(map((response : MessageEvent) : any => {
-        let data = JSON.parse(response.data);
-        console.log(data);
-      }));
+    return this._http.get(joinCourseSessionUrl, {
+      headers : headers
+    });
+    
+  }
+
+
+  getSessionInfo(sessionId)  : Observable<any> {
+
+    let getSessionInfoUrl : string = "https://api-dev.reef-education.com/trogon" + "/v2/session/info/" + sessionId;
+    const headers = {
+      'Content-Type': 'application/json',
+      Accept: "application/json",
+      "Reef-Auth-Type": "oauth",
+      'Authorization': `Bearer ${this.loginData.access_token}`
+    }
+
+    return this._http.get(getSessionInfoUrl, {
+      headers : headers
+    });
+  }
+
+
+  createQuestion(body)  : Observable<any> {
+    let createQuestionUrl : string = "https://api-dev.reef-education.com/trogon" + "/v8/question/";
+
+    const headers = {
+      'Content-Type': 'application/json',
+      Accept: "application/json",
+      "Reef-Auth-Type": "oauth",
+      'Authorization': `Bearer ${this.loginData.access_token}`
+    }
+
+    return this._http.put(createQuestionUrl, body, {
+      headers : headers
+    });
+
   }
 
 }

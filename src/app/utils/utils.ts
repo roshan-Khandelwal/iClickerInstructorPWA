@@ -39,7 +39,7 @@ export function buildAuthHeaders(secKey, userAuth, method, contentLength) {
 
     const auth = `TRGN ${userAuth}:${seckeyB64}`;
     
-    console.log(auth);
+    // console.log(auth);
     // let seckeyHash = crypto.HmacSHA1(authStr, parseSecKey(seckey.replace(/-/g, '')));
     // const seckeyB64 = crypto.enc.Base64.stringify(seckeyHash);
     // const auth = `TRGN ${btoa(userAuth)}:${seckeyB64}`;

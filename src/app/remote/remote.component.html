@@ -1,0 +1,10 @@
+<section class="container">
+  <h3>START POLL</h3>
+  <div class="buttonRow">
+    <button mat-stroked-button class="questonTypeButton" *ngFor="let questionType of questionTypes" 
+      (click)="setQuestionType(questionType)" [ngClass]="{'isSelected':questionType.type === activeQuestionType.type}">{{questionType.title}}</button>
+  </div>
+
+  <i class="material-icons start_session" *ngIf="!inSession" (click)="createQuestion()">play_circle_filled</i>
+  <i class="material-icons start_session" *ngIf="inSession" (click)="endQuestion()">pause_circle_filled</i>
+</section>
